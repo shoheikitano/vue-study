@@ -10,6 +10,10 @@
     <ul>
       <li v-for="item in items" :key="item.id">{{item.name}}</li>
     </ul>
+    <input type="text" v-model="model">
+    <p>{{model}}</p>
+    <!-- v-on:イベント処理 -->
+    <p v-on:click="counter++">{{counter}}</p>
     <Test msg="props test"/>
     <!-- propsで値を渡したいときには":"をつけるかv-bind:をつける-->
     <Test v-for="item in items" :key="item.id" :msg="item.name"/>
@@ -19,15 +23,24 @@
     <button @click="doChangeStyleClass">change Class</button>
     <button @click="doChangeClasses">change Classes</button>
     <button @click="doChangeIf">change v-if</button>
+    <input type="text" v-model="num">
+    <p>{{calc}}</p>
+    <Test v-bind:msg="newTitle" />
+    <button @click="doChangeTitle">changetitle</button>
+    <Test msg="emit test" @result-event="appAction"/>
+    <p>{{result}}</p>
+    <Calc />
   </div>
 </template>
 
 <script>
+import Calc from "./Calc"
 import Test from "./Test"
 export default {
   name: 'HelloWorld',
   components: {
     Test,
+    Calc,
   },
   data: () => ({
     msg: 'kitanoshohei',
@@ -43,7 +56,12 @@ export default {
     items:[
       {id:1, name:'orange'},
       {id:2, name:'apple'},
-    ]
+    ],
+    model:'v-model',
+    counter:0,
+    num:0,
+    newTitle:'',
+    result:'',
   }),
   methods: {
     doAction () {
@@ -65,6 +83,19 @@ export default {
     },
     doChangeIf () {
       this.isIf = !this.isIf;
+    },
+    doChangeTitle () {
+      var input = prompt("new title");
+      this.newTitle = input;
+    },
+    appAction (message) {
+      this.result = 'emit ' + message;
+    }
+  },
+  /* computedはnumが変更された場合に動的に起動する */
+  computed: {
+    calc () {
+      return this.num * this.num;
     }
   }
 }
